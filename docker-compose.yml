@@ -1,0 +1,53 @@
+version: "3"
+
+services:
+    vac:
+        container_name: vac
+        image: vac:latest
+        build:
+            context: .
+            dockerfile: ./Dockerfile.vac
+
+    scoreservice:
+        container_name: score_service
+        restart: always
+        build:
+            context: .
+            dockerfile: ./Dockerfile.score_service
+        networks:
+            - apinetwork
+        expose:
+            - "8000"
+        ports:
+            - "8003:8000"
+        depends_on:
+            - vac
+
+    webcrawler:
+        container_name: web_crawler_service
+        restart: always
+        build:
+            context: .
+            dockerfile: ./Dockerfile.web_crawler_service
+        networks:
+            - apinetwork
+        expose:
+            - "8000"
+        ports:
+            - "8002:8000"
+
+    dashboardservice:
+        container_name: dashboard_service
+        restart: always
+        build:
+            context: .
+            dockerfile: ./Dockerfile.dashboard_service
+        networks:
+            - apinetwork
+        expose:
+            - "5000"
+        ports:
+            - "5000:5000"
+
+networks:
+    apinetwork:
