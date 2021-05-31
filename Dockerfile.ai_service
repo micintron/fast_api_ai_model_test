@@ -1,0 +1,7 @@
+FROM python:3.8
+
+COPY services/ai_service/api /app
+WORKDIR /app
+RUN pip install --proxy http://preproxy.uscis.dhs.gov -r requirements.txt
+
+CMD ["gunicorn", "main:app", "-b 0.0.0.0:8000", "-w", "4","-t", "500", "-k","uvicorn.workers.UvicornWorker"]
